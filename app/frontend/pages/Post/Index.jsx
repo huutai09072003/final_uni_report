@@ -21,7 +21,6 @@ export default function Index({ posts, flash }) {
             New post
           </Link>
         </div>
-
         <div className="min-w-full">
           {posts.map((post) => (
             <Fragment key={post.id}>
