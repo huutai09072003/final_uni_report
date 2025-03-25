@@ -6,7 +6,8 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "newArchEnabled": true,
+    "newArchEnabled": false,
+    "jsEngine": "hermes",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -14,7 +15,10 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.example.example"
+      "bundleIdentifier": "com.example.example",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -28,7 +32,7 @@
     },
     "extra": {
       "eas": {
-        "projectId": "190b96bb-2fec-4d8c-9333-b64534b105d2"
+        "projectId": "ad5f6242-6a64-45be-8f5f-f32d73afd55a"
       }
     }
   }
