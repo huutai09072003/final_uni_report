@@ -31,8 +31,9 @@ gem "bootsnap", require: false
 
 #Devise for Authenticateion
 gem "devise"
-gem "devise-jwt"
 gem "rack-cors"
+
+gem 'inertia_rails'
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem

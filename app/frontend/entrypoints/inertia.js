@@ -7,7 +7,7 @@ createInertiaApp({
   // Set default page title
   // see https://inertia-rails.netlify.app/guide/title-and-meta
   //
-  // title: title => title ? `${title} - App` : 'App',
+  title: title => title ? `${title} - App` : 'App',
 
   // Disable progress bar
   //

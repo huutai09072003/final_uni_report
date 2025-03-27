@@ -1,8 +1,16 @@
-import { Link, Head } from '@inertiajs/react'
+import { Link, Head, usePage } from '@inertiajs/react'
 import { Fragment } from 'react'
 import Post from './Post'
 
 export default function Index({ posts, flash }) {
+  const { props } = usePage();
+  const { auth } = props;
+
+  if (!auth?.user) {
+    window.location.href = '/users/sign_in';
+    return null;
+  }
+
   return (
     <>
       <Head title="Posts" />

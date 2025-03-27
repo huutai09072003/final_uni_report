@@ -1,13 +1,14 @@
 class Users::SessionsController < Devise::SessionsController
-  respond_to :json
-
-  private
-
-  def respond_with(resource, _opts = {})
-    render json: { message: 'Logged in successfully.', user: resource, token: request.env['warden-jwt_auth.token'] }, status: :ok
+  def create
+    self.resource = warden.authenticate!(auth_options)
+    sign_in(resource_name, resource)
+    flash[:notice] = 'Logged in successfully.'
+    redirect_to posts_path
   end
 
-  def respond_to_on_destroy
-    render json: { message: 'Logged out successfully.' }, status: :ok
+  def destroy
+    signed_out = (Devise.sign_out_all_scopes ? sign_out : sign_out(resource_name))
+    flash[:notice] = 'Logged out successfully.'
+    redirect_to new_user_session_path
   end
 end
