@@ -10,7 +10,7 @@ export default function Identify() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    post('/waste');
+    post('/wastes');
   };
 
   return (

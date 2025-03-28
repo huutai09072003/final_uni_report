@@ -3,7 +3,7 @@ class Users::SessionsController < Devise::SessionsController
     self.resource = warden.authenticate!(auth_options)
     sign_in(resource_name, resource)
     flash[:notice] = 'Logged in successfully.'
-    redirect_to posts_path
+    redirect_to wastes_path
   end
 
   def destroy
