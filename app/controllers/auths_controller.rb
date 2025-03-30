@@ -1,4 +1,4 @@
-class AuthController < ApplicationController
+class AuthsController < ApplicationController
   def login
     render inertia: 'Auth/Login'
   end
