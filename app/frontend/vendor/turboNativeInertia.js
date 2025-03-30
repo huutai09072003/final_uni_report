@@ -205,24 +205,24 @@ window.TurboSession = null;
   const setupOnLoad = () => {
     document.addEventListener("turbo:load", setup)
 
-    document.addEventListener('inertia:start', (event) => {
-      console.log(event)
-      console.log(`Starting a visit to ${event.detail.visit.url}`)
-    })
+    // document.addEventListener('inertia:start', (event) => {
+    //   console.log(event)
+    //   console.log(`Starting a visit to ${event.detail.visit.url}`)
+    // })
 
-    document.addEventListener('inertia:before', (event) => {
-      console.log(event)
-      console.log(`About to make a visit to ${event.detail.visit.url}`)
-    })
+    // document.addEventListener('inertia:before', (event) => {
+    //   console.log(event)
+    //   console.log(`About to make a visit to ${event.detail.visit.url}`)
+    // })
 
-    document.addEventListener('inertia:success', (event) => {
-      console.log(event)
-      console.log(`Successfully made a visit to ${event.detail}`)
-    })
+    // document.addEventListener('inertia:success', (event) => {
+    //   console.log(event)
+    //   console.log(`Successfully made a visit to ${event.detail}`)
+    // })
 
-    document.addEventListener('inertia:error', (event) => {
-      console.log(`Some error ${event.detail}`)
-    })
+    // document.addEventListener('inertia:error', (event) => {
+    //   console.log(`Some error ${event.detail}`)
+    // })
 
     // setTimeout(() => {
     //   if (!window.Turbo) {

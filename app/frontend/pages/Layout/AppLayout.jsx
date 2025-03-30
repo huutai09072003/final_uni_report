@@ -50,7 +50,7 @@ const AppLayout = ({ children }) => {
               </>
             ) : (
               <>
-                <Link href="/users/sign_in" className="text-white hover:underline">
+                <Link href="auth/login" className="text-white hover:underline">
                   Login
                 </Link>
                 <Link href="/users/sign_up" className="text-white hover:underline">
@@ -72,7 +72,7 @@ const AppLayout = ({ children }) => {
           </div>
         )}
 
-        <main className="flex-1 p-5 bg-neutral-200 pb-24">{children}</main>
+        <main className="flex-1 p-2 bg-neutral-200 pb-20">{children}</main>
 
         <AppMenu />
       </div>

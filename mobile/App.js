@@ -25,6 +25,26 @@ export default function App() {
           name={Routes.EditPost}
           component={InertiaWebview}
         />
+        <Stack.Screen
+          name={Routes.Pages}
+          component={InertiaWebview}
+        />
+        <Stack.Screen
+          name={Routes.Login}
+          component={InertiaWebview}
+        />
+        <Stack.Screen
+          name={Routes.CreateSession}
+          component={InertiaWebview}
+        />
+        <Stack.Screen
+          name={Routes.Register}
+          component={InertiaWebview}
+        />
+        <Stack.Screen
+          name={Routes.Wastes}
+          component={InertiaWebview}
+        />
       </Stack.Navigator>
     </NavigationContainer>
 

@@ -4,12 +4,12 @@ import Post from './Post'
 
 export default function Index({ posts, flash }) {
   const { props } = usePage();
-  const { auth } = props;
+  // const { auth } = props;
 
-  if (!auth?.user) {
-    window.location.href = '/users/sign_in';
-    return null;
-  }
+  // if (!auth?.user) {
+  //   window.location.href = '/users/sign_in';
+  //   return null;
+  // }
 
   return (
     <>

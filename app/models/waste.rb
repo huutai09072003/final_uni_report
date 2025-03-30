@@ -1,5 +1,9 @@
 class Waste < ApplicationRecord
   belongs_to :user
+  has_one_attached :image
+  
+  validates :image, presence: true
+  enum status: { pending: 'pending', identified: 'identified', processed: 'processed' }, _default: 'pending'
 end
 
 # == Schema Information
@@ -9,7 +13,7 @@ end
 #  id         :bigint           not null, primary key
 #  image      :string
 #  status     :string
-#  type       :string
+#  waste_type :string
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #  user_id    :bigint           not null

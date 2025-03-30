@@ -6,6 +6,11 @@ export const Routes = {
   ShowPost: "ShowPost",
   EditPost: "EditPost",
   Fallback: "Fallback",
+  Pages: "Pages",
+  CreateSession: "CreateSession",
+  Login: "Login",
+  Register: "Register",
+  Wastes: "Wastes",
 }
 
 export const linkingConfig = {
@@ -15,6 +20,11 @@ export const linkingConfig = {
     [Routes.EditPost]: "posts/:id/edit",
     [Routes.ShowPost]: "posts/:id",
     [Routes.Fallback]: "*",
+    [Routes.Pages]: "/pages",
+    [Routes.Login]: "/auth/login",
+    [Routes.CreateSession]: "/users/sign_in",
+    [Routes.Register]: "/auth/register",
+    [Routes.Wastes]: "/wastes",
   },
 };
 

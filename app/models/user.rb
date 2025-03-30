@@ -5,6 +5,20 @@ class User < ApplicationRecord
 
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
+
+  # Validations
+  validates :name, presence: true, length: { maximum: 50 }
+  validates :location, length: { maximum: 100 }, allow_blank: true
+  validates :role, inclusion: { in: %w[user collector admin], message: "%{value} is not a valid role" }
+
+  # Optional: Method to check role
+  def admin?
+    role == "admin"
+  end
+
+  def collector?
+    role == "collector"
+  end
 end
 
 # == Schema Information
@@ -14,9 +28,14 @@ end
 #  id                     :bigint           not null, primary key
 #  email                  :string           default(""), not null
 #  encrypted_password     :string           default(""), not null
+#  location               :string
+#  name                   :string
+#  points                 :integer
+#  recycling_goal         :integer
 #  remember_created_at    :datetime
 #  reset_password_sent_at :datetime
 #  reset_password_token   :string
+#  role                   :string
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
 #
