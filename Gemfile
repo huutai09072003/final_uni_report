@@ -31,11 +31,17 @@ gem "bootsnap", require: false
 
 #Devise for Authenticateion
 gem "devise"
+
 gem "rack-cors"
 
 gem 'inertia_rails'
 
 gem 'pry'
+
+gem 'kaminari'
+
+#s3 for image upload
+gem 'aws-sdk-s3', '~> 1.142'
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
