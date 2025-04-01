@@ -8,8 +8,8 @@ class User < ApplicationRecord
 
   # Validations
   validates :name, presence: true, length: { maximum: 50 }
-  validates :location, length: { maximum: 100 }, allow_blank: true
-  validates :role, inclusion: { in: %w[user collector admin], message: "%{value} is not a valid role" }
+  validates :location, presence: true, allow_blank: true
+  validates :role, inclusion: { in: %w[user collector admin], message: "%{value} is not a valid role" }, allow_nil: true
 
   # Optional: Method to check role
   def admin?

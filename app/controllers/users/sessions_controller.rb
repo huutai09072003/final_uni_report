@@ -1,6 +1,8 @@
 class Users::SessionsController < Devise::SessionsController
+  skip_before_action :verify_authenticity_token, only: :create
+
+  
   def create
-    binding.pry
     self.resource = warden.authenticate!(auth_options)
     sign_in(resource_name, resource)
     response.set_header('X-CSRF-Token', form_authenticity_token)

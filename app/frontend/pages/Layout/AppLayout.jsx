@@ -50,10 +50,10 @@ const AppLayout = ({ children }) => {
               </>
             ) : (
               <>
-                <Link href="auth/login" className="text-white hover:underline">
+                <Link href="/auth/login" className="text-white hover:underline">
                   Login
                 </Link>
-                <Link href="/users/sign_up" className="text-white hover:underline">
+                <Link href="/auth/register" className="text-white hover:underline">
                   Register
                 </Link>
               </>
