@@ -23,14 +23,30 @@ class WastesController < ApplicationController
   end
 
   def create
-    @waste = current_user.wastes.new(waste_params.except(:image))
-    @waste.waste_waste_type = "Bottle"
-    @waste.image.attach(params[:waste][:image]) if params[:waste][:image].present?
-    @waste.status = 'identified' # Giả sử đã nhận diện
+    uploaded_image = params[:waste][:image]
+  
+    response = HTTParty.post(
+      'http://localhost:8000/predict',
+      body: {
+        image: uploaded_image
+      },
+      headers: {
+        'Content-Type' => 'multipart/form-data'
+      }
+    )
 
+    binding.pry
+  
+    detected_type = response.parsed_response["type"] rescue "Unknown"
+  
+    @waste = current_user.wastes.new(waste_params.except(:image))
+    @waste.waste_type = detected_type
+    @waste.image.attach(uploaded_image) if uploaded_image.present?
+    @waste.status = 'identified'
+  
     if @waste.save
       flash[:notice] = 'Waste identified successfully!'
-      redirect_to wastes_path # /wastes
+      redirect_to wastes_path
     else
       render inertia: 'Waste/Identify', props: {
         errors: @waste.errors.messages,
