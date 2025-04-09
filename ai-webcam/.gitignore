@@ -1,0 +1,25 @@
+# === FRONTEND (React + Vite) ===
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/.env
+frontend/.DS_Store
+
+# === BACKEND (FastAPI + Python) ===
+backend/__pycache__/
+backend/venv/
+backend/.env
+backend/.mypy_cache/
+backend/.pytest_cache/
+backend/.DS_Store
+backend/*.pt  # ignore YOLO model weights
+
+# === Python general ===
+*.py[cod]
+*.log
+*.sqlite3
+*.db
+*.egg-info/
+*.pkl
+
+# === Environment
