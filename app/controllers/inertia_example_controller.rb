@@ -5,3 +5,4 @@ class InertiaExampleController < ApplicationController
     }
   end
 end
+aaa

@@ -1,5 +1,7 @@
 class WastesController < ApplicationController
-  before_action :authenticate_user!, only: [:index, :create, :identify, :new]
+  include ActionView::Helpers::AssetUrlHelper
+  before_action :authenticate_user!, only: [:index,:identify, :new]
+  skip_before_action :verify_authenticity_token, only: [:create]
 
   def index
     @wastes = current_user.wastes.page(params[:page]).per(4)
@@ -23,35 +25,30 @@ class WastesController < ApplicationController
   end
 
   def create
-    uploaded_image = params[:waste][:image]
-  
-    response = HTTParty.post(
-      'http://localhost:8000/predict',
-      body: {
-        image: uploaded_image
-      },
-      headers: {
-        'Content-Type' => 'multipart/form-data'
-      }
-    )
-
     binding.pry
-  
-    detected_type = response.parsed_response["type"] rescue "Unknown"
-  
+    uploaded_image = params[:waste][:image]
+    detected_type = params[:waste][:waste_type] || "Unknown"
+
     @waste = current_user.wastes.new(waste_params.except(:image))
     @waste.waste_type = detected_type
-    @waste.image.attach(uploaded_image) if uploaded_image.present?
     @waste.status = 'identified'
-  
+    @waste.image.attach(uploaded_image) if uploaded_image.present?
+
     if @waste.save
-      flash[:notice] = 'Waste identified successfully!'
-      redirect_to wastes_path
+      render json: {
+        success: true,
+        message: 'Waste identified and saved successfully',
+        waste: {
+          id: @waste.id,
+          waste_type: @waste.waste_type,
+          status: @waste.status,
+        }
+      }, status: :created
     else
-      render inertia: 'Waste/Identify', props: {
-        errors: @waste.errors.messages,
-        flash: flash.to_hash
-      }
+      render json: {
+        success: false,
+        errors: @waste.errors.full_messages
+      }, status: :unprocessable_entity
     end
   end
 

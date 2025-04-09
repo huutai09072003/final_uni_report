@@ -1,12 +1,25 @@
 class Users::SessionsController < Devise::SessionsController
-  skip_before_action :verify_authenticity_token, only: :create
+  skip_before_action :verify_authenticity_token, only: [:create, :destroy]
 
   def create
     self.resource = warden.authenticate!(auth_options)
     sign_in(resource_name, resource)
     response.set_header('X-CSRF-Token', form_authenticity_token)
-    flash[:notice] = 'Logged in successfully.'
-    redirect_to wastes_path
+
+    if params[:webcam].present?
+      render json: {
+        success: true,
+        message: 'Đăng nhập thành công.',
+        user: {
+          id: resource.id,
+          email: resource.email,
+          name: resource.name || resource.email.split("@").first
+        }
+      }, status: :ok
+    else
+      flash[:notice] = 'Logged in successfully.'
+      redirect_to wastes_path
+    end
   end
 
   def destroy
