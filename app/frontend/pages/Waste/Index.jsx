@@ -1,9 +1,46 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { usePage, Link } from '@inertiajs/react';
 
 export default function Index() {
   const { props } = usePage();
-  const { wastes, pagination } = props;
+  const { wastes: initialWastes, pagination, auth } = props;
+
+  const [wastes, setWastes] = useState(initialWastes || []);
+  const wsRef = useRef(null);
+
+  useEffect(() => {
+    const ws = new WebSocket('ws://localhost:3000/cable');
+
+    ws.onopen = () => {
+      const subscribeMsg = {
+        command: 'subscribe',
+        identifier: JSON.stringify({ channel: 'WasteChannel' }),
+      };
+      ws.send(JSON.stringify(subscribeMsg));
+      console.log('🟢 Connected to WasteChannel');
+    };
+
+    ws.onmessage = (event) => {
+      const response = JSON.parse(event.data);
+      if (response.type === 'ping' || response.type === 'confirm_subscription') return;
+      const data = response.message;
+
+      if (data && data.waste_type) {
+        setWastes((prev) => [data, ...prev]);
+      }
+    };
+
+    ws.onerror = (err) => console.error('WebSocket error:', err);
+    ws.onclose = () => console.warn('WebSocket disconnected');
+
+    wsRef.current = ws;
+
+    return () => {
+      if (wsRef.current) {
+        wsRef.current.close();
+      }
+    };
+  }, []);
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -17,8 +54,6 @@ export default function Index() {
         return 'gray-600';
     }
   };
-
-  console.log(getStatusColor(wastes[0]?.status));
 
   return (
     <div className="p-5">
@@ -47,7 +82,10 @@ export default function Index() {
                   Type: <span className="text-green-600">{waste.waste_type || 'N/A'}</span>
                 </div>
                 <div className="text-md text-gray-600">
-                  Status: <span className={`font-medium text-${getStatusColor(waste.status)}`}>{waste.status}</span>
+                  Status:{' '}
+                  <span className={`font-medium text-${getStatusColor(waste.status)}`}>
+                    {waste.status}
+                  </span>
                 </div>
               </div>
             </div>

@@ -6,9 +6,17 @@ import ResultDisplay from "./components/ResultDisplay";
 import ResultModal from "./components/ResultModal";
 import Webcam from "react-webcam";
 
+interface Detection {
+  label: string;
+  confidence: number;
+  bbox: number[];
+}
+
 const MainApp: React.FC = () => {
   const webcamRef = useRef<Webcam>(null);
-  const [result, setResult] = useState<string | null>(null);
+  const [resultTypes, setResultTypes] = useState<string[]>([]);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [detections, setDetections] = useState<Detection[]>([]);
   const [detectedImage, setDetectedImage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -28,17 +36,40 @@ const MainApp: React.FC = () => {
           "Content-Type": "application/json",
         },
       });
-      const data = await res.json();
 
-      setResult(data.type);
-      setDetectedImage(data.image);
+            // Trong captureAndSend()
+      const data = await res.json();
+      const types: string[] = data.types || [];
+      const annotatedImage = data.image; // đã vẽ khung
+
+      setResultTypes(types);
+      setDetections(data.detections || []);
+      setDetectedImage(annotatedImage); // cập nhật hiển thị
       setShowModal(true);
+
+      // Gửi ảnh annotated nếu hợp lệ
+      if (types.length > 0 && !types.includes("Unknown")) {
+        const blob = await fetch(annotatedImage).then((res) => res.blob());
+
+        const formData = new FormData();
+        formData.append("waste[image]", blob, "annotated.jpg");
+        types.forEach((type) =>
+          formData.append("waste[waste_types][]", type)
+        );
+
+        await fetch("http://localhost:3000/wastes", {
+          method: "POST",
+          body: formData,
+          credentials: "include",
+        });
+      }
     } catch (err) {
-      console.error("Lỗi khi nhận diện:", err);
+      console.error("Lỗi khi nhận diện hoặc lưu dữ liệu:", err);
     } finally {
       setIsLoading(false);
     }
   };
+
 
   const handleLogout = async () => {
     try {
@@ -57,9 +88,17 @@ const MainApp: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-green-50 py-10 flex flex-col items-center">
-      <h1 className="text-3xl font-bold mb-6 text-green-700">
-        ♻️ Ứng dụng nhận diện rác
-      </h1>
+      <div className="w-full px-6 flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold text-green-700">
+          ♻️ Ứng dụng nhận diện rác
+        </h1>
+        <button
+          onClick={handleLogout}
+          className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-full"
+        >
+          🚪 Đăng xuất
+        </button>
+      </div>
 
       <WebcamCapture webcamRef={webcamRef} />
 
@@ -71,11 +110,11 @@ const MainApp: React.FC = () => {
         {isLoading ? "⏳ Đang xử lý..." : "📸 Nhận diện"}
       </button>
 
-      <ResultDisplay result={result} detectedImage={detectedImage} />
+      <ResultDisplay result={resultTypes.join(", ")} detectedImage={detectedImage} />
 
       {showModal && (
         <ResultModal
-          result={result}
+          result={resultTypes.length > 0 ? resultTypes[0] : "Unknown"}
           onClose={() => setShowModal(false)}
           onLogout={handleLogout}
         />

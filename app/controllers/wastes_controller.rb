@@ -25,29 +25,38 @@ class WastesController < ApplicationController
   end
 
   def create
-    binding.pry
     uploaded_image = params[:waste][:image]
-    detected_type = params[:waste][:waste_type] || "Unknown"
+    waste_types = Array(params.dig(:waste, :waste_types))
+  
+    created = []
+  
+    waste_types.each do |waste_type|
+      waste = current_user.wastes.new(waste_params.except(:image))
+      waste.waste_type = waste_type
+      waste.status = 'identified'
+      waste.image.attach(uploaded_image) if uploaded_image.present?
+  
+      created << waste if waste.save
 
-    @waste = current_user.wastes.new(waste_params.except(:image))
-    @waste.waste_type = detected_type
-    @waste.status = 'identified'
-    @waste.image.attach(uploaded_image) if uploaded_image.present?
-
-    if @waste.save
+      
+      ActionCable.server.broadcast("waste_channel_user_#{current_user.id}", {
+        id: waste.id,
+        waste_type: waste.waste_type,
+        status: waste.status,
+        created_at: waste.created_at.strftime("%Y-%m-%d %H:%M:%S")
+      })
+    end
+  
+    if created.any?
       render json: {
         success: true,
-        message: 'Waste identified and saved successfully',
-        waste: {
-          id: @waste.id,
-          waste_type: @waste.waste_type,
-          status: @waste.status,
-        }
+        message: 'Wastes saved successfully',
+        wastes: created.map { |w| { id: w.id, waste_type: w.waste_type, status: w.status } }
       }, status: :created
     else
       render json: {
         success: false,
-        errors: @waste.errors.full_messages
+        errors: ['Không lưu được loại rác nào.']
       }, status: :unprocessable_entity
     end
   end
@@ -68,6 +77,6 @@ class WastesController < ApplicationController
   private
 
   def waste_params
-    params.require(:waste).permit(:image, :waste_type, :status)
+    params.require(:waste).permit(:name, :description, :image)
   end
 end
