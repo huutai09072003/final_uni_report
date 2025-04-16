@@ -19,7 +19,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-model = YOLO("best.pt")
+model = YOLO("type_newest_ver.pt")
 NAMES = model.names if hasattr(model, "names") else ["Object"]
 
 class ImageInput(BaseModel):
