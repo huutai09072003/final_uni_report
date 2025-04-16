@@ -1,23 +1,41 @@
-import { Link, usePage } from '@inertiajs/react';
-import React from 'react';
+import { Link, usePage } from '@inertiajs/react'
+import { useState, useEffect } from 'react'
+import useNotificationCable from '../hooks/useNotificationCable'
 
-const AppMenu = () => {
-  const { props } = usePage();
-  const { auth } = props;
-  const currentPath = window.location.pathname;
+export default function AppMenu() {
+  const { props } = usePage()
+  const { auth } = props
+  const [unreadCount, setUnreadCount] = useState(auth.unread_notifications_count || 0)
+  const currentPath = window.location.pathname
+
+  useNotificationCable(auth?.user?.id, (newNotification) => {
+    if (!newNotification.read) {
+      setUnreadCount((prev) => prev + 1)
+    }
+  })
+
+  useEffect(() => {
+    const handleMarkAsRead = () => {
+      setUnreadCount((prev) => (prev > 0 ? prev - 1 : 0))
+    }
+
+    window.addEventListener('notification:markAsRead', handleMarkAsRead)
+    return () => {
+      window.removeEventListener('notification:markAsRead', handleMarkAsRead)
+    }
+  }, [])
 
   const handleClick = (e, path) => {
     if (currentPath === path) {
-      e.preventDefault();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      e.preventDefault()
+      window.scrollTo({ top: 0, behavior: 'smooth' })
     }
-  };
+  }
 
   return (
     <div className="fixed bottom-0 left-0 w-full h-12 bg-green-600 flex items-center justify-around rounded-t-lg shadow-md">
       {auth?.user ? (
         <>
-          {/* Home */}
           <Link
             href="/"
             onClick={(e) => handleClick(e, '/')}
@@ -42,11 +60,10 @@ const AppMenu = () => {
             <span className="text-xs mt-0.5">Home</span>
           </Link>
 
-          {/* Notifications */}
           <Link
             href="/notifications"
             onClick={(e) => handleClick(e, '/notifications')}
-            className={`flex flex-col items-center justify-center text-white w-10 h-10 rounded-full hover:bg-green-700 transition-colors duration-200 ${
+            className={`relative flex flex-col items-center justify-center text-white w-10 h-10 rounded-full hover:bg-green-700 transition-colors duration-200 ${
               currentPath === '/notifications' ? 'bg-green-700' : ''
             }`}
           >
@@ -65,9 +82,13 @@ const AppMenu = () => {
               />
             </svg>
             <span className="text-xs mt-0.5">Notifications</span>
+            {unreadCount > 0 && (
+              <span className="absolute top-0 right-0 bg-red-600 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
+                {unreadCount}
+              </span>
+            )}
           </Link>
 
-          {/* Account */}
           <Link
             href="/user"
             onClick={(e) => handleClick(e, '/user')}
@@ -94,12 +115,12 @@ const AppMenu = () => {
         </>
       ) : (
         <div className="flex space-x-6">
-          {window.location.pathname === 'auth/login' ? (
+          {window.location.pathname === '/auth/login' ? (
             <Link
-              href="auth/login"
-              onClick={(e) => handleClick(e, 'auth/login')}
+              href="/auth/login"
+              onClick={(e) => handleClick(e, '/auth/login')}
               className={`flex flex-col items-center justify-center text-white w-10 h-10 rounded-full hover:bg-green-700 transition-colors duration-200 ${
-                currentPath === 'auth/login' ? 'bg-green-700' : ''
+                currentPath === '/auth/login' ? 'bg-green-700' : ''
               }`}
             >
               <svg
@@ -119,39 +140,10 @@ const AppMenu = () => {
               <span className="text-xs mt-0.5">Login</span>
             </Link>
           ) : (
-            <div>
-            </div>
-          )
-          // (
-          //   <Link
-          //     href="/auth/register"
-          //     onClick={(e) => handleClick(e, '/auth/register')}
-          //     className={`flex flex-col items-center justify-center text-white w-10 h-10 rounded-full hover:bg-green-700 transition-colors duration-200 ${
-          //       currentPath === '/auth/register' ? 'bg-green-700' : ''
-          //     }`}
-          //   >
-          //     <svg
-          //       xmlns="http://www.w3.org/2000/svg"
-          //       className="h-5 w-5"
-          //       fill="none"
-          //       viewBox="0 0 24 24"
-          //       stroke="currentColor"
-          //     >
-          //       <path
-          //         strokeLinecap="round"
-          //         strokeLinejoin="round"
-          //         strokeWidth={2}
-          //         d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"
-          //       />
-          //     </svg>
-          //     {/* <span className="text-xs mt-0.5">Register</span> */}
-          //   </Link>
-          // )
-          }
+            <div></div>
+          )}
         </div>
       )}
     </div>
-  );
-};
-
-export default AppMenu;
+  )
+}

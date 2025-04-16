@@ -12,13 +12,13 @@ const AppLayout = ({ children }) => {
           <div className="flex items-center">
             <div className="mr-3">
               <svg fill="#000000" height="30px" width="30px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
-                  xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="-47 -47 564.00 564.00" xml:space="preserve"
+                  xmlnsXlink="http://www.w3.org/1999/xlink" viewBox="-47 -47 564.00 564.00" xmlSpace="preserve"
                   transform="rotate(0)">
-                  <g id="SVGRepo_bgCarrier" stroke-width="0">
-                      <rect x="-47" y="-47" width="564.00" height="564.00" rx="0" fill="#ffffff" strokewidth="0"></rect>
+                  <g id="SVGRepo_bgCarrier" strokeWidth="0">
+                      <rect x="-47" y="-47" width="564.00" height="564.00" rx="0" fill="#ffffff" strokeWidth="0"></rect>
                   </g>
-                  <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" stroke="#CCCCCC"
-                      stroke-width="0.9400000000000001"></g>
+                  <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round" stroke="#CCCCCC"
+                      strokeWidth="0.9400000000000001"></g>
                   <g id="SVGRepo_iconCarrier">
                       <g>
                           <path
