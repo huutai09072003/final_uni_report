@@ -5,7 +5,10 @@ class ApplicationController < ActionController::Base
 
   inertia_share do
     {
-      auth: { user: current_user&.as_json(only: [:id, :email]) },
+      auth: {
+        user: current_user&.as_json(only: [:id, :email]),
+        unread_notifications_count: current_user&.notifications&.unread&.count || 0
+      },
       flash: flash.to_hash
     }
   end
@@ -13,7 +16,6 @@ class ApplicationController < ActionController::Base
   protected
 
   def configure_permitted_parameters
-    # Thêm các param tùy chỉnh ở đây
     devise_parameter_sanitizer.permit(:sign_up, keys: [:name, :location, :recycling_goal, :role])
     devise_parameter_sanitizer.permit(:account_update, keys: [:name, :location, :recycling_goal, :role])
   end

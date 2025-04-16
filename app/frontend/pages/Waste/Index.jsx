@@ -1,46 +1,17 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import { usePage, Link } from '@inertiajs/react';
+import useWasteCable from '../hooks/useWasteCable'; // đường dẫn tới file hook
 
 export default function Index() {
   const { props } = usePage();
   const { wastes: initialWastes, pagination, auth } = props;
 
   const [wastes, setWastes] = useState(initialWastes || []);
-  const wsRef = useRef(null);
 
-  useEffect(() => {
-    const ws = new WebSocket('ws://localhost:3000/cable');
-
-    ws.onopen = () => {
-      const subscribeMsg = {
-        command: 'subscribe',
-        identifier: JSON.stringify({ channel: 'WasteChannel' }),
-      };
-      ws.send(JSON.stringify(subscribeMsg));
-      console.log('🟢 Connected to WasteChannel');
-    };
-
-    ws.onmessage = (event) => {
-      const response = JSON.parse(event.data);
-      if (response.type === 'ping' || response.type === 'confirm_subscription') return;
-      const data = response.message;
-
-      if (data && data.waste_type) {
-        setWastes((prev) => [data, ...prev]);
-      }
-    };
-
-    ws.onerror = (err) => console.error('WebSocket error:', err);
-    ws.onclose = () => console.warn('WebSocket disconnected');
-
-    wsRef.current = ws;
-
-    return () => {
-      if (wsRef.current) {
-        wsRef.current.close();
-      }
-    };
-  }, []);
+  // 👉 Sử dụng custom hook
+  useWasteCable(auth.user.id, (newWaste) => {
+    setWastes((prev) => [newWaste, ...prev]);
+  });
 
   const getStatusColor = (status) => {
     switch (status) {

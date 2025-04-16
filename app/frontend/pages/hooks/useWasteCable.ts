@@ -16,7 +16,7 @@ export default function useWasteCable(userId: number, onNewWaste: (w: Waste) => 
 
     const subscribeMsg = {
       command: "subscribe",
-      identifier: JSON.stringify({ channel: "WasteChannel" })
+      identifier: JSON.stringify({ channel: "WasteChannel", user_id: userId }),
     };
 
     ws.onopen = () => {
@@ -29,6 +29,7 @@ export default function useWasteCable(userId: number, onNewWaste: (w: Waste) => 
       if (response.type === "ping" || response.type === "confirm_subscription") return;
 
       const message = response.message;
+      console.log("📬 Received message", message);
       if (message?.waste_type) {
         onNewWaste(message);
       }

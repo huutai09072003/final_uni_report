@@ -1,10 +1,10 @@
 class WastesController < ApplicationController
   include ActionView::Helpers::AssetUrlHelper
-  before_action :authenticate_user!, only: [:index,:identify, :new]
+  before_action :authenticate_user!, only: [:index, :identify, :new]
   skip_before_action :verify_authenticity_token, only: [:create]
 
   def index
-    @wastes = current_user.wastes.page(params[:page]).per(4)
+    @wastes = current_user.wastes.page(params[:page]).per(10)
     render inertia: 'Waste/Index', props: {
       wastes: @wastes.map { |waste| 
         waste.as_json(only: [:id, :waste_type, :status]).merge(
@@ -27,27 +27,47 @@ class WastesController < ApplicationController
   def create
     uploaded_image = params[:waste][:image]
     waste_types = Array(params.dig(:waste, :waste_types))
-  
+
     created = []
-  
+
     waste_types.each do |waste_type|
       waste = current_user.wastes.new(waste_params.except(:image))
       waste.waste_type = waste_type
       waste.status = 'identified'
       waste.image.attach(uploaded_image) if uploaded_image.present?
-  
-      created << waste if waste.save
 
-      
-      ActionCable.server.broadcast("waste_channel_user_#{current_user.id}", {
-        id: waste.id,
-        waste_type: waste.waste_type,
-        status: waste.status,
-        created_at: waste.created_at.strftime("%Y-%m-%d %H:%M:%S")
-      })
+      if waste.save
+        created << waste
+
+        # Gửi Waste qua waste_channel
+        ActionCable.server.broadcast("waste_channel_user_#{current_user.id}", {
+          id: waste.id,
+          waste_type: waste.waste_type,
+          status: waste.status,
+          image_url: waste.image.attached? ? url_for(waste.image) : nil,
+          created_at: waste.created_at.strftime("%Y-%m-%d %H:%M:%S")
+        })
+      end
     end
-  
+
     if created.any?
+      # Tạo Notification
+      notification = Notification.create!(
+        user: current_user,
+        title: "Waste identified",
+        body: "Có thêm rác đã được nhận diện.",
+        read: false
+      )
+
+      # Gửi Notification qua notification_channel
+      ActionCable.server.broadcast("notification_channel_user_#{current_user.id}", {
+        id: notification.id,
+        title: notification.title,
+        body: notification.body,
+        read: notification.read,
+        created_at: notification.created_at.strftime("%Y-%m-%d %H:%M:%S")
+      })
+
       render json: {
         success: true,
         message: 'Wastes saved successfully',
