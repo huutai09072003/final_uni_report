@@ -44,3 +44,6 @@ node_modules
 .idea
 
 /config/application.yml
+/config/credentials/development.key
+
+/config/credentials/staging.key
