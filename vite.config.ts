@@ -7,13 +7,16 @@ export default defineConfig({
     react(),
     RubyPlugin(),
   ],
+  build: {
+    outDir: 'public/vite', // Đây là nơi Rails sẽ tìm thấy assets đã build
+    emptyOutDir: true
+  },
   server: {
-    host: '0.0.0.0', // Cho phép truy cập từ ngoài localhost (hữu ích với ngrok)
-    port: 5173,      // Port mặc định của Vite
+    host: '0.0.0.0',
+    port: 5173,
     proxy: {
-      // Chuyển hướng các request API tới Rails
       '/users': {
-        target: 'http://localhost:3000', // Backend Rails
+        target: 'http://localhost:3000',
         changeOrigin: true,
         secure: false,
       },
