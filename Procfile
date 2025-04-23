@@ -1,1 +1,1 @@
-web: bash bin/start-all.sh
+web: bundle exec puma -C config/puma.rb
