@@ -9,7 +9,7 @@ export default function App() {
   return (
     <NavigationContainer linking={linking}>
       <Stack.Navigator options={{headerShown: false}}>
-        <Stack.Screen
+        {/* <Stack.Screen
           name={Routes.Posts}
           component={InertiaWebview}
         />
@@ -24,17 +24,13 @@ export default function App() {
         <Stack.Screen
           name={Routes.EditPost}
           component={InertiaWebview}
-        />
+        /> */}
         <Stack.Screen
           name={Routes.Pages}
           component={InertiaWebview}
         />
         <Stack.Screen
           name={Routes.Login}
-          component={InertiaWebview}
-        />
-        <Stack.Screen
-          name={Routes.CreateSession}
           component={InertiaWebview}
         />
         <Stack.Screen

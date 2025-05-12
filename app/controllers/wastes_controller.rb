@@ -1,21 +1,19 @@
 class WastesController < ApplicationController
   include ActionView::Helpers::AssetUrlHelper
   before_action :authenticate_user!, only: [:index, :identify, :new]
-  skip_before_action :verify_authenticity_token, only: [:create]
+
+  inertia_share flash: -> { flash.to_hash }
 
   def index
-    @wastes = current_user.wastes.page(params[:page]).per(10)
-    render inertia: 'Waste/Index', props: {
-      wastes: @wastes.map { |waste| 
-        waste.as_json(only: [:id, :waste_type, :status]).merge(
-          image_url: waste.image.attached? ? url_for(waste.image) : nil
-        )
-      },
+    wastes = current_user.wastes.order(created_at: :desc).page(params[:page]).per(10)
+
+    render json: {
+      wastes: wastes.map { |waste| serialize_waste(waste) },
       pagination: {
-        current_page: @wastes.current_page,
-        total_pages: @wastes.total_pages,
-        total_count: @wastes.total_count,
-        per_page: @wastes.limit_value
+        current_page: wastes.current_page,
+        total_pages: wastes.total_pages,
+        total_count: wastes.total_count,
+        per_page: wastes.limit_value
       }
     }
   end
@@ -98,5 +96,11 @@ class WastesController < ApplicationController
 
   def waste_params
     params.require(:waste).permit(:name, :description, :image)
+  end
+
+  def serialize_waste(waste)
+    waste.as_json(only: [:id, :waste_type, :status]).merge(
+      image_url: waste.image.attached? ? url_for(waste.image) : nil
+    )
   end
 end

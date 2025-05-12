@@ -9,12 +9,12 @@
 
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
   allow do
-    origins 'http://localhost:5173' # later change to the domain of the frontend app
+    origins 'http://localhost:8081', 'http://192.168.1.9:8081'
+
     resource '*',
-            headers: %w[Authorization New_device Auth_token Refresh_token_expiry Refresh_token Auth_token_expiry Timezone],
-            methods: :any,
-            expose: %w[Authorization New_device Auth_token Refresh_token_expiry Refresh_token Auth_token_expiry],
-            max_age: 600,
-            credentials: true
+             headers: :any,
+             methods: [:get, :post, :put, :patch, :delete, :options, :head],
+             expose: %w[Authorization Auth_token Refresh_token],
+             credentials: true
   end
 end

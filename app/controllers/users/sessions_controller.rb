@@ -1,30 +1,39 @@
 class Users::SessionsController < Devise::SessionsController
-  skip_before_action :verify_authenticity_token, only: [:create, :destroy]
+  include ActionController::MimeResponds
+  respond_to :json
 
   def create
-    self.resource = warden.authenticate!(auth_options)
-    sign_in(resource_name, resource)
-    response.set_header('X-CSRF-Token', form_authenticity_token)
+    user = User.find_for_authentication(email: params.dig(:user, :email))
 
-    if params[:webcam].present?
-      render json: {
-        success: true,
-        message: 'Đăng nhập thành công.',
-        user: {
-          id: resource.id,
-          email: resource.email,
-          name: resource.name || resource.email.split("@").first
-        }
-      }, status: :ok
-    else
-      flash[:notice] = 'Logged in successfully.'
-      redirect_to wastes_path
+    unless user&.valid_password?(params.dig(:user, :password))
+      return render_unauthorized('Email hoặc mật khẩu không chính xác.')
     end
+
+    sign_in(resource_name, user)
+
+    render json: {
+      success: true,
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name || user.email.split("@").first,
+        role: user.role,
+        location: user.location,
+        recycling_goal: user.recycling_goal,
+        points: user.points,
+        unread_notifications_count: user.notifications.unread.count
+      }
+    }, status: :ok
   end
 
   def destroy
-    signed_out = (Devise.sign_out_all_scopes ? sign_out : sign_out(resource_name))
-    flash[:notice] = 'Logged out successfully.'
-    redirect_to login_auth_path
+    sign_out(resource_name)
+    render json: { success: true, message: 'Đăng xuất thành công.' }, status: :ok
+  end
+
+  private
+
+  def render_unauthorized(message)
+    render json: { success: false, message: message }, status: :unauthorized
   end
 end

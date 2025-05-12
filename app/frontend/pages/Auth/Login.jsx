@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { router } from "@inertiajs/react";
 
 export default function Login() {
@@ -15,26 +14,42 @@ export default function Login() {
     setUser({ ...user, [field]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setProcessing(true);
     setErrors({});
-
-    axios
-      .post("/users/sign_in", { user })
-      .then(() => {
-        router.visit("/");
-      })
-      .catch((error) => {
-        if (error.response?.data?.errors) {
-          setErrors(error.response.data.errors);
-        } else {
-          console.error(error);
-        }
-      })
-      .finally(() => {
-        setProcessing(false);
+  
+    try {
+      const response = await fetch("/users/sign_in", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          user: {
+            email: user.email,
+            password: user.password,
+          }
+        }),
+        credentials: "include",
       });
+  
+      const data = await response.json();
+  
+      if (!response.ok || !data.success) {
+        setErrors(data.errors || { base: data.message || "Đăng nhập thất bại" });
+        return;
+      }
+
+      window.location.href = "/";
+  
+    } catch (error) {
+      console.error(error);
+      setErrors({ base: "Lỗi mạng hoặc server" });
+    } finally {
+      setProcessing(false);
+    }
   };
 
   return (
@@ -61,6 +76,10 @@ export default function Login() {
           error={errors.password}
           required
         />
+
+        {errors.base && (
+          <div className="text-red-600 text-sm">{errors.base}</div>
+        )}
 
         <button
           type="submit"
@@ -94,7 +113,9 @@ function Field({
         value={value}
         onChange={(e) => onChange(id, e.target.value)}
         required={required}
-        className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+        className={`mt-1 block w-full p-2 border rounded-md ${
+          error ? "border-red-500" : "border-gray-300"
+        }`}
       />
       {error && <div className="text-red-500 text-sm mt-1">{error}</div>}
     </div>
