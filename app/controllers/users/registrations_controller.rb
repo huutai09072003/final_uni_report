@@ -1,5 +1,5 @@
 # app/controllers/bloggers/registrations_controller.rb
-class Bloggers::RegistrationsController < Devise::RegistrationsController
+class Users::RegistrationsController < Devise::RegistrationsController
   protect_from_forgery with: :exception
   skip_before_action :verify_authenticity_token, only: :create
 
