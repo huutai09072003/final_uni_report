@@ -338,6 +338,8 @@ GEM
       i18n
     rdoc (6.13.0)
       psych (>= 4.0.0)
+    redis (5.4.0)
+      redis-client (>= 0.22.0)
     redis-client (0.24.0)
       connection_pool
     regexp_parser (2.9.2)
@@ -488,6 +490,7 @@ DEPENDENCIES
   rack-cors
   rails (~> 7.2.0.beta3)
   ransack
+  redis (>= 4.0.1)
   rubocop-rails-omakase
   ruby-vips
   sassc
