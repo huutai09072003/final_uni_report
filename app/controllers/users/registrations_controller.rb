@@ -1,11 +1,12 @@
-class Users::RegistrationsController < Devise::RegistrationsController
+# app/controllers/bloggers/registrations_controller.rb
+class Bloggers::RegistrationsController < Devise::RegistrationsController
   protect_from_forgery with: :exception
   skip_before_action :verify_authenticity_token, only: :create
 
   def create
     super do |resource|
       if resource.persisted?
-        flash[:notice] = 'Signed up successfully.'
+        flash[:notice] = "Đăng ký thành công! Hãy bắt đầu chia sẻ bài viết đầu tiên của bạn 🌱"
       end
     end
   end
