@@ -9,7 +9,10 @@
 
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
   allow do
-    origins 'http://localhost:8081', 'http://192.168.1.9:8081'
+    origins 'http://localhost:8081', 'http://192.168.1.9:8081', 'http://localhost:5173',
+            'https://green-world-three.vercel.app',
+            'https://green-world-git-main-nguyen-huynh-huu-tais-projects.vercel.app',
+            'https://green-world-fowxkisc-nguyen-huynh-huu-tais-projects.vercel.app'
 
     resource '*',
              headers: :any,
