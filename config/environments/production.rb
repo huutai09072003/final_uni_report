@@ -18,7 +18,7 @@ Rails.application.configure do
   config.server_timing = false
 
   # Configure hosts (Heroku domain).
-  config.hosts << "production.greenworld.com"
+  config.hosts << "inertia-native-ad24d88d5c88.herokuapp.com/"
 
   # Enable caching.
   config.action_controller.perform_caching = true
@@ -31,7 +31,7 @@ Rails.application.configure do
   # Store uploaded files on the cloud (Amazon S3 or similar).
   config.active_storage.service = :amazon # Thay bằng :local nếu chưa dùng S3
   # Nếu dùng S3, cấu hình Active Storage với Heroku domain
-  config.active_storage.url_options = { host: "production.greenworld.com" }
+  config.active_storage.url_options = { host: "inertia-native-ad24d88d5c88.herokuapp.com/" }
 
   # Ensure all mailers are sent.
   config.action_mailer.raise_delivery_errors = true
@@ -50,7 +50,7 @@ Rails.application.configure do
   }
 
   # Set default URL for mailer (Heroku domain).
-  config.action_mailer.default_url_options = { host: "production.greenworld.com" }
+  config.action_mailer.default_url_options = { host: "inertia-native-ad24d88d5c88.herokuapp.com/" }
 
   # Enable caching for Action Mailer templates.
   config.action_mailer.perform_caching = true
@@ -84,7 +84,7 @@ Rails.application.configure do
 
   # Enable Action Cable (ensure proper origin validation).
   config.action_cable.disable_request_forgery_protection = false
-  config.action_cable.allowed_request_origins = ["https://production.greenworld.com"]
+  config.action_cable.allowed_request_origins = ["https://inertia-native-ad24d88d5c88.herokuapp.com/"]
 
   # Raise error for missing callback actions.
   config.action_controller.raise_on_missing_callback_actions = true
