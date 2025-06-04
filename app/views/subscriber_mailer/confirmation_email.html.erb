@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f7fafc;
+        color: #2d3748;
+        padding: 20px;
+      }
+      .container {
+        max-width: 600px;
+        margin: auto;
+        background: white;
+        padding: 30px;
+        border-radius: 6px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      }
+      .button {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #38a169;
+        color: white;
+        text-decoration: none;
+        border-radius: 4px;
+        margin-top: 20px;
+      }
+      .footer {
+        font-size: 12px;
+        color: #a0aec0;
+        margin-top: 30px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>🎉 Xin chào <%= @subscriber.full_name.presence || @subscriber.nickname || "bạn" %>,</h2>
+
+      <p>Cảm ơn bạn đã đăng ký trở thành thành viên của <strong>WasteAI</strong>!</p>
+
+      <p>Chúng tôi rất vui được đồng hành cùng bạn trong hành trình bảo vệ môi trường và tái chế thông minh bằng công nghệ AI.</p>
+
+      <p>Nếu bạn có bất kỳ câu hỏi hoặc cần hỗ trợ, đừng ngần ngại phản hồi email này.</p>
+
+      <a href="<%= root_url %>" class="button">Truy cập WasteAI</a>
+
+      <div class="footer">
+        WasteAI - Công nghệ vì môi trường xanh 🌱<br />
+        Đây là email tự động, vui lòng không trả lời lại.
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,12 @@
+<h2>Chào <%= @subscriber.full_name || @subscriber.email %>,</h2>
+
+<p>
+  Chúng tôi rất vui được thông báo rằng chiến dịch
+  "<strong><%= @campaign.title %></strong>" của bạn đã được duyệt thành công! 🎉
+</p>
+
+<p>
+  Chiến dịch hiện đã hiển thị công khai trên nền tảng WasteAI để mọi người cùng biết đến và ủng hộ.
+</p>
+
+<a href="<%= root_url %>campaigns/<%= @campaign.id %>" class="button">Xem chiến dịch</a>

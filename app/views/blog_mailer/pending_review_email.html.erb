@@ -1,0 +1,15 @@
+<h2>Chào <%= @blogger.username || @blogger.email %>,</h2>
+
+<p>
+  Cảm ơn bạn đã chia sẻ một bài viết mới tới cộng đồng WasteAI! 🌿
+</p>
+
+<p>
+  Bài viết "<strong><%= @blog.title %></strong>" của bạn đã được gửi lên hệ thống và đang chờ được ban biên tập duyệt trước khi hiển thị công khai.
+</p>
+
+<p>
+  Chúng tôi sẽ gửi email thông báo ngay khi bài viết được duyệt.
+</p>
+
+<a href="<%= root_url %>blogs" class="button">Xem các bài viết khác</a>

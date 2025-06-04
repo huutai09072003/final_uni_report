@@ -1,0 +1,15 @@
+<h2>Xin chào <%= @subscriber.full_name || @subscriber.email %>,</h2>
+
+<p>
+  Chiến dịch "<strong><%= @campaign.title %></strong>" của bạn đã được gửi lên hệ thống thành công! 🌱
+</p>
+
+<p>
+  Ban quản trị sẽ xem xét và duyệt chiến dịch trước khi hiển thị công khai trên nền tảng WasteAI.
+</p>
+
+<p>
+  Chúng tôi sẽ gửi email khi chiến dịch được duyệt và công bố.
+</p>
+
+<a href="<%= root_url %>campaigns" class="button">Xem các chiến dịch khác</a>

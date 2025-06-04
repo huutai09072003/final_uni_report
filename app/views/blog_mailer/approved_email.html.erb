@@ -1,0 +1,11 @@
+<h2>Xin chúc mừng <%= @blogger.username || @blogger.email %>!</h2>
+
+<p>
+  Bài viết "<strong><%= @blog.title %></strong>" của bạn đã được ban biên tập duyệt và hiện đã hiển thị công khai trên WasteAI! 🎉
+</p>
+
+<p>
+  Cảm ơn bạn đã đóng góp nội dung vì môi trường xanh – hy vọng bạn sẽ tiếp tục chia sẻ những ý tưởng tích cực cùng cộng đồng!
+</p>
+
+<a href="<%= root_url %>blogs/<%= @blog.id %>" class="button">🔍 Xem bài viết</a>

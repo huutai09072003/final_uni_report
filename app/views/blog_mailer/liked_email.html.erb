@@ -1,0 +1,15 @@
+<h2>Xin chào <%= @blogger.username || @blogger.email %>,</h2>
+
+<p>
+  Một người dùng vừa yêu thích bài viết "<strong><%= @blog.title %></strong>" của bạn! 🌟
+</p>
+
+<p>
+  Người dùng: <strong><%= @liker.username || @liker.email %></strong>
+</p>
+
+<p>
+  Cảm ơn bạn đã đóng góp những nội dung tích cực trên WasteAI. Hy vọng bạn sẽ tiếp tục truyền cảm hứng cho cộng đồng!
+</p>
+
+<a href="<%= root_url %>blogs/<%= @blog.id %>" class="button">📖 Xem bài viết</a>
