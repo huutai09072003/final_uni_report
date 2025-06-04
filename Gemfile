@@ -31,6 +31,7 @@ gem "bootsnap", require: false
 
 #Devise for Authenticateion
 gem "devise"
+gem 'devise-jwt'
 
 gem "rack-cors"
 
@@ -40,6 +41,17 @@ gem 'pry'
 
 gem 'kaminari'
 
+gem 'ransack'
+
+gem 'activeadmin'
+
+gem "sassc"
+
+gem 'sidekiq'
+
+gem 'stripe'
+
+gem 'ruby-vips'
 #s3 for image upload
 gem 'aws-sdk-s3', '~> 1.142'
 
@@ -55,6 +67,8 @@ group :development, :test do
 
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
+
+  gem 'dotenv-rails'
 end
 
 group :development do
