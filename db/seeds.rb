@@ -25,4 +25,4 @@ posts.each do |post|
   )
 end
 
-puts "Seeded #{Post.count} posts successfully!"
+puts "Seeded #{Post.count} posts successfully!"AdminUser.create!(email: 'admin@example.com', password: 'password', password_confirmation: 'password') if Rails.env.development?
