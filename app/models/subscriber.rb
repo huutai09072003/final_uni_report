@@ -20,6 +20,7 @@ class Subscriber < ApplicationRecord
       phone_number
       created_at
       updated_at
+      stripe_account_id_eq
     ]
   end
 end

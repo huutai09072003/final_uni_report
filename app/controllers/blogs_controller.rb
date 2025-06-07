@@ -29,7 +29,7 @@ class BlogsController < ApplicationController
       blog.increment!(:view_count)
       render json: blog.as_json(
         include: {
-          blogger: { only: [:id, :name, :avatar_url] },
+          blogger: { only: [:id, :username] },
           blog_likes: { only: [:blogger_id] }
         }
       )

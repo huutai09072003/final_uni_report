@@ -471,7 +471,7 @@ PLATFORMS
 DEPENDENCIES
   activeadmin
   annotate
-  aws-sdk-s3 (~> 1.142)
+  aws-sdk-s3 (~> 1.151)
   bootsnap
   brakeman
   capybara

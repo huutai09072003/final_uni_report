@@ -1,6 +1,7 @@
 class Blog < ApplicationRecord
   belongs_to :blogger
   has_many :blog_likes, dependent: :destroy
+  has_many :comments, dependent: :destroy
 
   enum status: {
     pending: 'pending',

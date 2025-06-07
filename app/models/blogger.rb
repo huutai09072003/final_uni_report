@@ -7,13 +7,14 @@ class Blogger < ApplicationRecord
 
   has_many :blogs
   has_many :blog_likes
+  has_many :comments
 
   def self.ransackable_associations(auth_object = nil)
     ["blog_likes", "blogs"]
   end
 
   def self.ransackable_attributes(auth_object = nil)
-    ["created_at", "email", "encrypted_password", "id", "id_value", "remember_created_at", "reset_password_sent_at", "reset_password_token", "updated_at", "username"]
+    ["created_at", "email", "encrypted_password", "id", "id_value", "remember_created_at", "reset_password_sent_at", "reset_password_token", "updated_at", "username", "comments_id_eq"]
   end
 end
 

@@ -3,12 +3,11 @@ class GamesController < ApplicationController
   require 'open-uri'
 
   def index
-    games = Game.includes(:images, :featured_image_attachment).all.map do |game|
+    games = Game.includes(:images).all.map do |game|
       {
         id: game.id,
         name: game.name,
         description: game.description,
-        featured_image_url: game.featured_image.attached? ? url_for(game.featured_image) : nil,
         images: game.images.map do |image|
           {
             id: image.id,
@@ -23,13 +22,12 @@ class GamesController < ApplicationController
   end
 
   def show
-    game = Game.includes(:images, :featured_image_attachment).find(params[:id])
+    game = Game.includes(:images).find(params[:id])
 
     render json: {
       id: game.id,
       name: game.name,
       description: game.description,
-      featured_image_url: game.featured_image.attached? ? url_for(game.featured_image) : nil,
       images: game.images.map do |image|
         {
           id: image.id,

@@ -42,6 +42,7 @@ Rails.application.routes.draw do
       post :donate
       get :donation
       post :verify_donation
+      get :all_donations
     end
   end
 
@@ -77,6 +78,7 @@ Rails.application.routes.draw do
       get :top_bloggers
       get :top_views
     end
+    resources :comments, only: [:index, :create, :update, :destroy]
   end
 
   resources :bloggers, only: [:index, :show, :update]

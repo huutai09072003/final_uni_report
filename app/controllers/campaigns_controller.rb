@@ -61,6 +61,20 @@ class CampaignsController < ApplicationController
     render json: @donations
   end
 
+  def all_donations
+    @campaign = Campaign.find(params[:id])
+    @donations = @campaign.donations.where(donation_type: 'for_campaign').order(created_at: :desc)
+    render json: @donations.map { |d|
+      {
+        id: d.id,
+        full_name: d.full_name,
+        amount: d.amount.to_f,
+        currency: d.currency,
+        created_at: d.created_at&.iso8601
+      }
+    }
+  end
+
   def donate
     campaign = Campaign.find(params[:id])
     founder = campaign.founder

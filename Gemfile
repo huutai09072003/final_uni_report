@@ -53,7 +53,7 @@ gem 'stripe'
 
 gem 'ruby-vips'
 #s3 for image upload
-gem 'aws-sdk-s3', '~> 1.142'
+gem 'aws-sdk-s3', '~> 1.151'
 
 #Request for AI
 gem 'httparty'

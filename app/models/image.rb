@@ -1,6 +1,10 @@
 class Image < ApplicationRecord
   has_one_attached :file
   belongs_to :game, optional: true
+
+  def self.ransackable_attributes(auth_object = nil)
+    ["created_at", "game_id", "id", "id_value", "name", "updated_at"]
+  end
 end
 
 # == Schema Information

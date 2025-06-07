@@ -26,7 +26,8 @@ class Campaign < ApplicationRecord
       thumb_nail_url
       created_at
       updated_at
-      founder_id   # 👈 thêm dòng này nếu muốn lọc theo founder
+      founder_id
+      donations_id_eq
     ]
   end
 

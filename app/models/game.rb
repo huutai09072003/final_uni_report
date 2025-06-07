@@ -1,6 +1,13 @@
 class Game < ApplicationRecord
   has_many :images
-  has_one_attached :featured_image
+
+  def self.ransackable_associations(auth_object = nil)
+    ["images"]
+  end
+
+  def self.ransackable_attributes(auth_object = nil)
+    ["created_at", "description", "id", "id_value", "name", "updated_at"]
+  end
 end
 
 # == Schema Information

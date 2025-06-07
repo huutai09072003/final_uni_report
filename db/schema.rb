@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_06_01_113224) do
+ActiveRecord::Schema[7.2].define(version: 2025_06_07_143955) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -117,6 +117,16 @@ ActiveRecord::Schema[7.2].define(version: 2025_06_01_113224) do
     t.bigint "founder_id"
     t.boolean "is_get_donated"
     t.index ["founder_id"], name: "index_campaigns_on_founder_id"
+  end
+
+  create_table "comments", force: :cascade do |t|
+    t.bigint "blog_id", null: false
+    t.bigint "blogger_id", null: false
+    t.text "content"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["blog_id"], name: "index_comments_on_blog_id"
+    t.index ["blogger_id"], name: "index_comments_on_blogger_id"
   end
 
   create_table "donations", force: :cascade do |t|
@@ -288,6 +298,8 @@ ActiveRecord::Schema[7.2].define(version: 2025_06_01_113224) do
   add_foreign_key "blog_likes", "blogs"
   add_foreign_key "blogs", "bloggers"
   add_foreign_key "campaigns", "subscribers", column: "founder_id"
+  add_foreign_key "comments", "bloggers"
+  add_foreign_key "comments", "blogs"
   add_foreign_key "donations", "campaigns"
   add_foreign_key "images", "games"
   add_foreign_key "item_relationships", "items"
