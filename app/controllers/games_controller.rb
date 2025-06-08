@@ -81,4 +81,15 @@ class GamesController < ApplicationController
   rescue => e
     render json: { error: "Lỗi xử lý ảnh: #{e.message}" }, status: :unprocessable_entity
   end
+
+  def images
+    game = Game.find(params[:id])
+    images = game.images.with_attached_file
+    render json: images.map { |img|
+      {
+        id: img.id,
+        url: url_for(img.file)
+      }
+    }
+  end
 end

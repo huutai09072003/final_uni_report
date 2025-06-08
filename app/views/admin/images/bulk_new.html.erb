@@ -1,0 +1,13 @@
+<h2>Bulk Upload Images for Game</h2>
+<%= form_with url: bulk_create_admin_images_path, local: true, multipart: true do %>
+  <div style="margin-bottom: 1em;">
+    <%= label_tag :game_id, "Game" %><br>
+    <%= select_tag :game_id, options_from_collection_for_select(@games, :id, :name), required: true %>
+  </div>
+  <div style="margin-bottom: 1em;">
+    <%= label_tag :files, "Images" %><br>
+    <%= file_field_tag "files[]", multiple: true, required: true %>
+    <p style="color: #888; font-size: 90%">Bạn có thể chọn nhiều file ảnh cùng lúc (giữ Ctrl/Shift).</p>
+  </div>
+  <%= submit_tag "Upload Images", class: "button" %>
+<% end %>

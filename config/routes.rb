@@ -91,6 +91,7 @@ Rails.application.routes.draw do
     member do
       post :upload_image
       post :upload_image_from_url
+      get :images
     end
   end
 
