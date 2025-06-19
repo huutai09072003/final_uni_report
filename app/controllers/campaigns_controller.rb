@@ -1,7 +1,7 @@
 class CampaignsController < ApplicationController
   def index
     @campaigns = Campaign.status_approved
-    render json: @campaigns
+    render json: @campaigns.as_json(methods: [:thumbnail_url])
   end
 
   def create
@@ -25,7 +25,10 @@ class CampaignsController < ApplicationController
 
     if @campaign.save
       CampaignMailer.pending_review_email(@campaign).deliver_later
-      render json: { success: true, campaign: @campaign }, status: :created
+      render json: {
+        success: true,
+        campaign: @campaign.as_json(methods: [:thumbnail_url])
+      }, status: :created
     else
       render json: { success: false, errors: @campaign.errors.full_messages }, status: :unprocessable_entity
     end
@@ -39,7 +42,7 @@ class CampaignsController < ApplicationController
       id: @campaign.id,
       title: @campaign.title,
       description: @campaign.description,
-      thumb_nail_url: @campaign.thumb_nail_url,
+      thumb_nail_url: @campaign.thumbnail_url,
       goal: @campaign.goal,
       location: @campaign.location,
       status: @campaign.status,
@@ -135,20 +138,6 @@ class CampaignsController < ApplicationController
 
     session = Stripe::Checkout::Session.create(session_params)
 
-    # Donation.create!(
-    #   amount: amount / 100.0,
-    #   currency: currency,
-    #   frequency: frequency,
-    #   full_name: full_name,
-    #   include_name: include_name,
-    #   subscribe_newsletter: subscribe_newsletter,
-    #   stripe_session_id: session.id,
-    #   stripe_customer_id: customer.id,
-    #   status: 'pending',
-    #   donation_type: 'for_campaign',
-    #   campaign_id: campaign.id
-    # )
-
     render json: { url: session.url }
   rescue Stripe::StripeError => e
     render json: { error: e.message }, status: :bad_request
@@ -163,7 +152,6 @@ class CampaignsController < ApplicationController
     session = Stripe::Checkout::Session.retrieve(session_id)
     customer = Stripe::Customer.retrieve(session.customer)
 
-    # Kiểm tra xem donation đã được lưu chưa
     existing = Donation.find_by(stripe_session_id: session.id)
     if existing
       render json: { message: "Đã xác nhận trước đó" }, status: :ok
@@ -201,6 +189,6 @@ class CampaignsController < ApplicationController
   private
 
   def campaign_params
-    params.require(:campaign).permit(:title, :description, :thumb_nail_url, :goal, :location)
+    params.require(:campaign).permit(:title, :description, :thumbnail, :goal, :location)
   end
 end

@@ -45,6 +45,10 @@ class ItemsController < ApplicationController
     }
   end
 
+  def related_item_for_chatbot
+    items = Item.where()
+  end
+
   private
 
   def serialize_item(item)

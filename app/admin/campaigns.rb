@@ -1,71 +1,79 @@
 ActiveAdmin.register Campaign do
   actions :all
 
-  permit_params :title, :description, :goal, :location, :status, :thumb_nail_url, :founder_id
+  permit_params :title, :description, :goal, :location, :status, :thumbnail, :founder_id
 
-  index do
+  # == INDEX
+  index title: "📢 Danh sách Chiến dịch" do
     selectable_column
     id_column
     column :title
-    column :subscriber
-    column :status
-    column :created_at
+    column "👤 Người tạo", :founder
+    column "🎯 Mục tiêu", :goal
+    column "📍 Địa điểm", :location
+    column "📌 Trạng thái", :status
+    column "📅 Ngày tạo", :created_at
     actions defaults: false do |campaign|
-      item "Approve", approve_admin_campaign_path(campaign), method: :put if campaign.status_pending?
-      item "Reject", reject_admin_campaign_path(campaign), method: :put if campaign.status_pending?
+      if campaign.status_pending?
+        item "✔️ Duyệt", approve_admin_campaign_path(campaign), method: :put, class: "member_link"
+        item "❌ Từ chối", reject_admin_campaign_path(campaign), method: :put, class: "member_link"
+      else
+        item "↩️ Reset", pending_admin_campaign_path(campaign), method: :put, class: "member_link"
+      end
     end
   end
 
+  # == MEMBER ACTIONS
   member_action :approve, method: :put do
     resource.status_approved!
     CampaignMailer.approved_email(resource).deliver_later
-    redirect_to admin_campaigns_path, notice: "Campaign approved."
+    redirect_to admin_campaigns_path, notice: "✅ Campaign đã được duyệt."
   end
 
   member_action :reject, method: :put do
     resource.status_rejected!
-    redirect_to admin_campaigns_path, alert: "Campaign rejected."
+    redirect_to admin_campaigns_path, alert: "❌ Campaign đã bị từ chối."
   end
 
   member_action :pending, method: :put do
     resource.status_pending!
-    redirect_to admin_campaigns_path, alert: "Campaign pending."
+    redirect_to admin_campaigns_path, notice: "↩️ Campaign đã được chuyển về trạng thái chờ duyệt."
   end
 
-  show do
-    attributes_table do
+  # == SHOW
+  show title: proc { |campaign| "📢 Chi tiết Campaign ##{campaign.id}" } do
+    attributes_table title: "🔍 Thông tin chiến dịch" do
       row :id
       row :title
       row :description
-      row :subscriber
+      row("Ảnh đại diện") do |c|
+        if c.thumbnail.attached?
+          image_tag url_for(c.thumbnail), style: "max-height: 150px"
+        else
+          em "Chưa có ảnh"
+        end
+      end
+      row :goal
+      row :location
       row :status
+      row :is_get_donated
+      row :founder
       row :created_at
+      row :updated_at
     end
   end
-  # See permitted parameters documentation:
-  # https://github.com/activeadmin/activeadmin/blob/master/docs/2-resource-customization.md#setting-up-strong-parameters
-  #
-  # Uncomment all parameters which should be permitted for assignment
-  #
-  # permit_params :title, :description, :status, :subscriber_ids, :thumb_nail_url, :goal, :location, :founder
-  #
-  # or
-  #
-  # permit_params do
-  #   permitted = [:title, :description, :status, :subscriber_ids, :thumb_nail_url, :goal, :location, :founder]
-  #   permitted << :other if params[:action] == 'create' && current_user.admin?
-  #   permitted
-  # end
 
-  form do |f|
-    f.inputs do
+  # == FORM
+  form multipart: true do |f|
+    f.semantic_errors
+    f.inputs "📋 Thông tin chiến dịch" do
       f.input :title
       f.input :description
       f.input :goal
       f.input :location
-      f.input :thumb_nail_url
       f.input :status, as: :select, collection: Campaign.statuses.keys
       f.input :founder, collection: Subscriber.all.map { |s| [s.full_name, s.id] }
+      f.input :thumbnail, as: :file, hint: f.object.thumbnail.attached? ? image_tag(url_for(f.object.thumbnail), style: "max-height: 100px") : content_tag(:span, "Chưa có ảnh")
     end
     f.actions
   end

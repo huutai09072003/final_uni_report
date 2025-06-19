@@ -3,12 +3,14 @@ class Blog < ApplicationRecord
   has_many :blog_likes, dependent: :destroy
   has_many :comments, dependent: :destroy
 
+  has_one_attached :thumbnail
+
   enum status: {
     pending: 'pending',
     approved: 'approved',
     rejected: 'rejected'
   }, _prefix: true, _default: "pending"
-  
+
   validates :title, :content, presence: true
 
   def self.ransackable_associations(auth_object = nil)
@@ -16,7 +18,16 @@ class Blog < ApplicationRecord
   end
 
   def self.ransackable_attributes(auth_object = nil)
-    ["blogger_id", "content", "created_at", "id", "id_value", "likes_count", "published_at", "status", "thumb_nail_url", "title", "updated_at", "view_count"]
+    ["blogger_id", "content", "created_at", "id", "id_value", "likes_count", "published_at", "status", "thumb_nail_url", "title", "updated_at", "view_count", 
+    "comments_id_eq", "thumbnail_attachment_id_eq", "thumbnail_blob_id_eq"]
+  end
+
+  def thumbnail_url
+    if thumbnail.attached?
+      Rails.application.routes.url_helpers.rails_blob_url(thumbnail)
+    else
+      thumb_nail_url
+    end
   end
 end
 

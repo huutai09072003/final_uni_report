@@ -16,6 +16,14 @@ class Donation < ApplicationRecord
     for_web: 'for_web',
     for_campaign: 'for_campaign'
   }, _default: 'for_web', _prefix: true
+
+  def self.ransackable_associations(auth_object = nil)
+    ["campaign"]
+  end
+
+  def self.ransackable_attributes(auth_object = nil)
+    ["amount", "campaign_id", "created_at", "currency", "donation_type", "frequency", "full_name", "id", "id_value", "include_name", "session_id", "status", "stripe_customer_id", "stripe_payment_id", "stripe_session_id", "stripe_subscription_id", "subscribe_newsletter", "updated_at"]
+  end
 end
 
 # == Schema Information

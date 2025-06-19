@@ -81,18 +81,6 @@ class DonationsController < ApplicationController
 
     session = Stripe::Checkout::Session.create(session_params)
 
-    Donation.create!(
-      amount: amount / 100.0,
-      currency: currency,
-      frequency: frequency,
-      full_name: full_name,
-      subscribe_newsletter: subscribe_newsletter,
-      include_name: include_name,
-      stripe_session_id: session.id,
-      stripe_customer_id: customer.id,
-      status: 'pending'
-    )
-
     render json: { sessionId: session.id, publishableKey: ENV['STRIPE_PUBLISHABLE_KEY'] }
   rescue Stripe::StripeError => e
     render json: { error: e.message }, status: :bad_request
@@ -105,26 +93,42 @@ class DonationsController < ApplicationController
     payment_intent = session.payment_intent ? Stripe::PaymentIntent.retrieve(session.payment_intent) : nil
     subscription = session.subscription ? Stripe::Subscription.retrieve(session.subscription) : nil
 
-    # Cập nhật trạng thái quyên góp trong database
-    donation = Donation.find_by(stripe_session_id: session.id)
-    if donation
-      donation.update!(
-        status: 'completed',
-        stripe_payment_id: payment_intent&.id,
-        stripe_subscription_id: subscription&.id
-      )
-    end
-
     response_data = {
       amount: (payment_intent&.amount || subscription&.items&.data&.first&.price&.unit_amount || 0) / 100.0,
       currency: payment_intent&.currency || subscription&.items&.data&.first&.price&.currency,
+      donation_type: 'for_web',
+      frequency: subscription&.plan&.interval || 'once' ,
+      full_name: session.metadata['full_name'] || 'Ẩn danh',
+      include_name: session.metadata['include_name'] == 'true',
+      status: 'completed',
+      subscribe_newsletter: session.metadata['subscribe_newsletter'] == 'true',
+      stripe_customer_id: session.customer,
+      stripe_payment_id: session.payment_intent,
+      stripe_session_id: session.id,
+      stripe_subscription_id: session.subscription,
       payment_id: payment_intent&.id,
-      subscription_id: subscription&.id,
-      frequency: donation&.frequency,
-      full_name: donation&.full_name,
-      subscribe_newsletter: donation&.subscribe_newsletter,
-      include_name: donation&.include_name
     }
+
+    existing = Donation.find_by(stripe_session_id: session.id)
+    if existing
+      render json: response_data
+      return
+    end
+
+    donation = Donation.create!(
+      amount: response_data[:amount],
+      currency: response_data[:currency],
+      full_name: response_data[:full_name],
+      include_name: response_data[:include_name],
+      status: response_data[:status],
+      subscribe_newsletter: response_data[:subscribe_newsletter],
+      donation_type: response_data[:donation_type],
+      frequency: response_data[:frequency],
+      stripe_customer_id: response_data[:stripe_customer_id],
+      stripe_payment_id: response_data[:stripe_payment_id],
+      stripe_session_id: response_data[:stripe_session_id],
+      stripe_subscription_id: response_data[:stripe_subscription_id]
+    )
 
     render json: response_data
   end

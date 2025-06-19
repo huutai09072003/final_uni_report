@@ -4,6 +4,10 @@ class BlogLike < ApplicationRecord
 
   validates :blog_id, uniqueness: { scope: :blogger_id }
 
+  def self.ransackable_associations(auth_object = nil)
+    ["blog", "blogger"]
+  end
+  
   def self.ransackable_attributes(auth_object = nil)
     ["blog_id", "blogger_id", "created_at", "id", "updated_at"]
   end

@@ -4,6 +4,8 @@ class Campaign < ApplicationRecord
   has_many :subscribers, through: :participants
   has_many :donations
 
+  has_one_attached :thumbnail
+
   enum status: {
     pending: 'pending',
     approved: 'approved',
@@ -28,10 +30,20 @@ class Campaign < ApplicationRecord
       updated_at
       founder_id
       donations_id_eq
+      thumbnail_attachment_id_eq
+      thumbnail_blob_id_eq
     ]
   end
 
   # validates :title, :description, presence: true
+
+  def thumbnail_url
+    if thumbnail.attached?
+      Rails.application.routes.url_helpers.rails_blob_url(thumbnail)
+    else
+      thumb_nail_url
+    end
+  end
 end
 
 # == Schema Information
