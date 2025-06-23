@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_06_07_143955) do
+ActiveRecord::Schema[7.2].define(version: 2025_06_23_084807) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -229,6 +229,16 @@ ActiveRecord::Schema[7.2].define(version: 2025_06_07_143955) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "saved_blogs", force: :cascade do |t|
+    t.bigint "blogger_id", null: false
+    t.bigint "blog_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["blog_id"], name: "index_saved_blogs_on_blog_id"
+    t.index ["blogger_id", "blog_id"], name: "index_saved_blogs_on_blogger_and_blog", unique: true
+    t.index ["blogger_id"], name: "index_saved_blogs_on_blogger_id"
+  end
+
   create_table "sections", force: :cascade do |t|
     t.string "name"
     t.text "description"
@@ -308,6 +318,8 @@ ActiveRecord::Schema[7.2].define(version: 2025_06_07_143955) do
   add_foreign_key "notifications", "users"
   add_foreign_key "participants", "campaigns"
   add_foreign_key "participants", "subscribers"
+  add_foreign_key "saved_blogs", "bloggers"
+  add_foreign_key "saved_blogs", "blogs"
   add_foreign_key "stripe_accounts", "subscribers"
   add_foreign_key "wastes", "users"
 end

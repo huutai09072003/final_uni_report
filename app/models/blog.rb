@@ -2,6 +2,8 @@ class Blog < ApplicationRecord
   belongs_to :blogger
   has_many :blog_likes, dependent: :destroy
   has_many :comments, dependent: :destroy
+  has_many :saved_blogs, dependent: :destroy
+  has_many :saved_by_bloggers, through: :saved_blogs, source: :blogger
 
   has_one_attached :thumbnail
 

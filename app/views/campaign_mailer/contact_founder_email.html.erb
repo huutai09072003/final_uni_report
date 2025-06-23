@@ -1,0 +1,14 @@
+<h2 style="color: #2f855a; margin-bottom: 12px;">📩 Bạn có tin nhắn mới về chiến dịch "<%= @campaign.title %>"</h2>
+
+<p>
+  Người gửi: <strong><%= @from_name %></strong><br/>
+  Email: <a href="mailto:<%= @from_email %>" style="color: #3182ce;"><%= @from_email %></a>
+</p>
+
+<hr style="margin: 20px 0; border: none; border-top: 1px solid #e2e8f0;" />
+
+<p style="white-space: pre-line; line-height: 1.6;">
+  <%= @message %>
+</p>
+
+<a href="<%= campaign_url(@campaign) %>" class="button">Xem chiến dịch</a>
