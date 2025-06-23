@@ -1,9 +1,33 @@
 class BlogsController < ApplicationController
-  before_action :authenticate_blogger!, only: [:create, :like]
+  before_action :authenticate_blogger!, only: [:create, :like, :destroy]
 
   def index
-    blogs = Blog.includes(:blogger).status_approved.order(published_at: :desc)
-    render json: blogs.as_json(include: { blogger: { only: [:id, :name, :avatar_url] } }, methods: [:thumbnail_url])
+    blogs = Blog.includes(:blogger).joins(:blogger).merge(Blogger.all)  # joins để ransack được blogger fields
+
+    blogs = blogs.status_approved
+
+    q = blogs.ransack(params[:q])
+
+    blogs = q.result(distinct: true).order(published_at: :desc)
+
+    blogs = blogs.page(params[:page]).per(params[:per_page] || 10)
+
+    render json: {
+      blogs: blogs.as_json(
+        include: {
+          blogger: {
+            only: [:id, :username, :avatar_url]
+          }
+        },
+        methods: [:thumbnail_url]
+      ),
+      pagination: {
+        current_page: blogs.current_page,
+        total_pages: blogs.total_pages,
+        total_count: blogs.total_count,
+        per_page: blogs.limit_value
+      }
+    }
   end
 
   def top_bloggers
@@ -67,6 +91,16 @@ class BlogsController < ApplicationController
       else
         render json: { errors: like.errors.full_messages }, status: :unprocessable_entity
       end
+    end
+  end
+  
+  def destroy
+    blog = current_blogger.blogs.find_by(id: params[:id])
+    if blog
+      blog.destroy
+      render json: { message: 'Blog deleted successfully' }, status: :ok
+    else
+      render json: { error: 'Blog not found' }, status: :not_found
     end
   end
 
