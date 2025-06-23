@@ -4,4 +4,10 @@ class SubscriberMailer < ApplicationMailer
     @subscriber = subscriber
     mail(to: @subscriber.email, subject: "Xác nhận đăng ký thành công")
   end
+
+  def warning_email(subscriber, subject, body)
+    @subscriber = subscriber
+    @body = body
+    mail(to: @subscriber.email, subject: subject)
+  end
 end

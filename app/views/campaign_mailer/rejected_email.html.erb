@@ -1,0 +1,9 @@
+<h2>❌ Chiến dịch của bạn đã bị từ chối</h2>
+
+<p>Xin chào <strong><%= @campaign.founder.full_name %></strong>,</p>
+
+<p>Chúng tôi xin thông báo rằng chiến dịch "<strong><%= @campaign.title %></strong>" đã không vượt qua vòng kiểm duyệt.</p>
+
+<p>Bạn có thể chỉnh sửa lại chiến dịch và gửi lại để được xét duyệt.</p>
+
+<a class="button" href="<%= edit_admin_campaign_url(@campaign) %>">Chỉnh sửa chiến dịch</a>

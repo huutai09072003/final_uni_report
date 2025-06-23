@@ -1,0 +1,92 @@
+<style>
+  .warning-form-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: 40px;
+  }
+
+  .warning-form {
+    width: 100%;
+    max-width: 640px;
+    background: #fff;
+    border-radius: 10px;
+    padding: 32px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    font-family: Arial, sans-serif;
+    color: #333;
+  }
+
+  .warning-form h3 {
+    font-size: 22px;
+    font-weight: bold;
+    color: #c53030;
+    margin-bottom: 24px;
+    text-align: center;
+  }
+
+  .form-group {
+    margin-bottom: 20px;
+  }
+
+  .form-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 8px;
+  }
+
+  .form-group input[type="text"],
+  .form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 15px;
+    box-sizing: border-box;
+  }
+
+  .form-group textarea {
+    resize: vertical;
+  }
+
+  .form-actions {
+    text-align: right;
+    margin-top: 30px;
+  }
+
+  .form-actions input[type="submit"] {
+    background-color: #e53e3e;
+    border: none;
+    color: white;
+    padding: 10px 24px;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 15px;
+  }
+
+  .form-actions input[type="submit"]:hover {
+    background-color: #c53030;
+  }
+</style>
+
+<div class="warning-form-wrapper">
+  <div class="warning-form">
+    <h3>⚠️ Gửi cảnh báo đến Founder: <%= campaign.founder.full_name %></h3>
+
+    <%= form_tag send_warning_admin_campaign_path(campaign), method: :post do %>
+      <div class="form-group">
+        <%= label_tag :subject, "Tiêu đề" %>
+        <%= text_field_tag :subject, "", required: true %>
+      </div>
+
+      <div class="form-group">
+        <%= label_tag :body, "Nội dung cảnh báo" %>
+        <%= text_area_tag :body, "", rows: 6, required: true %>
+      </div>
+
+      <div class="form-actions">
+        <%= submit_tag "Gửi cảnh báo", class: "button" %>
+      </div>
+    <% end %>
+  </div>
+</div>

@@ -18,6 +18,8 @@ ActiveAdmin.register Blog do
       else
         item "↩️ Reset", pending_admin_blog_path(blog), method: :put, class: "member_link"
       end
+
+      item "⚠️ Gửi cảnh báo", warning_admin_blog_path(blog), class: "member_link"
     end
   end
 
@@ -30,12 +32,30 @@ ActiveAdmin.register Blog do
 
   member_action :reject, method: :put do
     resource.update(status: "rejected")
+    BlogMailer.rejected_email(resource).deliver_later
     redirect_to admin_blogs_path, alert: "❌ Blog đã bị từ chối."
   end
 
   member_action :pending, method: :put do
     resource.update(status: "pending", published_at: nil)
     redirect_to admin_blogs_path, notice: "↩️ Blog đã được chuyển về trạng thái chờ duyệt."
+  end
+
+  member_action :warning, method: :get do
+    @blog = resource
+    render "admin/blogs/warning"
+  end
+
+  member_action :send_warning, method: :post do
+    subject = params[:subject]
+    body = params[:body]
+
+    if subject.present? && body.present?
+      BlogMailer.warning_email(resource, subject, body).deliver_later
+      redirect_to admin_blog_path(resource), notice: "⚠️ Cảnh báo đã được gửi."
+    else
+      redirect_to warning_admin_blog_path(resource), alert: "❌ Vui lòng nhập đủ tiêu đề và nội dung."
+    end
   end
 
   # == SHOW
