@@ -186,6 +186,42 @@ class CampaignsController < ApplicationController
     render json: { error: "Lỗi xác nhận donation: #{e.message}" }, status: :internal_server_error
   end
 
+  def contact_founder
+    campaign = Campaign.find(params[:id])
+    founder = campaign.founder
+
+    unless founder
+      render json: { error: 'Không tìm thấy người sáng lập chiến dịch.' }, status: :not_found
+      return
+    end
+
+    if params[:message].blank?
+      render json: { error: 'Vui lòng nhập tin nhắn.' }, status: :bad_request
+      return
+    end
+
+    CampaignMailer.contact_founder_email(
+      campaign: campaign,
+      founder: founder,
+      message: params[:message],
+      from_email: params[:from_email],
+      from_name: params[:from_name]
+    ).deliver_later
+
+    render json: { success: true, message: 'Tin nhắn đã được gửi đến người sáng lập chiến dịch.' }, status: :ok
+  end
+
+  def contact_to_admin
+    CampaignMailer.contact_to_admin_email(
+      campaign: @campaign,
+      message: params[:message],
+      from_email: params[:from_email],
+      from_name: params[:from_name]
+    ).deliver_later
+
+    render json: { success: true, message: 'Tin nhắn đã được gửi đến quản trị viên.' }, status: :ok
+  end
+
   private
 
   def campaign_params

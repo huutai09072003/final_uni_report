@@ -43,6 +43,8 @@ Rails.application.routes.draw do
       get :donation
       post :verify_donation
       get :all_donations
+      post :contact_founder
+      post :contact_to_admin
     end
   end
 
@@ -70,9 +72,10 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :blogs, only: [:index, :create, :show] do
+  resources :blogs, only: [:index, :create, :show, :destroy] do
     member do
       post :like
+      post :save, to: 'saved_blogs#toggle'
     end
     collection do
       get :top_bloggers
@@ -81,7 +84,15 @@ Rails.application.routes.draw do
     resources :comments, only: [:index, :create, :update, :destroy]
   end
 
-  resources :bloggers, only: [:index, :show, :update]
+  get '/saved_blogs', to: 'saved_blogs#index'
+
+  resources :bloggers, only: [:index, :show, :update] do
+    member do
+      get :liked_blogs
+      get :saved_blogs
+      get :commented_blogs
+    end
+  end
 
   resources :notifications, only: [:index, :update]
   resources :results, only: [:index, :create]
