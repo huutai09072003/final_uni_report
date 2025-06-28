@@ -48,7 +48,7 @@ ActiveAdmin.register_page "Dashboard" do
         panel "💸 Quyên góp gần đây" do
           ul do
             Donation.order(created_at: :desc).limit(5).map do |d|
-              campaign = Campaign.find_by(id: d.campaign_id)&.title || "Chiến dịch không xác định"
+              campaign = Campaign.find_by(id: d.campaign_id)&.title || ""
               li "💰 #{d.amount} #{d.currency} - #{campaign} (#{d.created_at.strftime("%d/%m/%Y")})"
             end
           end

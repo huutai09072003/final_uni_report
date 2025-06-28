@@ -3,7 +3,7 @@ class BlogsController < ApplicationController
 
   def index
     blogs = Blog.includes(:blogger).status_approved.order(published_at: :desc)
-    render json: blogs.as_json(include: { blogger: { only: [:id, :name, :avatar_url] } }, methods: [:thumbnail_url])
+    render json: blogs.as_json(include: { blogger: { only: [:id, :username, :avatar_url] } }, methods: [:thumbnail_url])
   end
 
   def top_bloggers
